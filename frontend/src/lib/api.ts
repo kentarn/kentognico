@@ -73,7 +73,7 @@ export const api = {
   },
 
   async checkHealth(): Promise<{ status: string; timestamp: string }> {
-    const response = await fetch(`${API_BASE_URL}/health`)
+    const response = await fetch(`${API_BASE_URL}/healthz`)
     return handleResponse<{ status: string; timestamp: string }>(response)
   },
 }
