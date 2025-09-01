@@ -9,7 +9,7 @@ COPY tsconfig.json ./
 COPY prisma ./prisma/
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -30,19 +30,14 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install production dependencies only
-RUN npm ci --only=production
+RUN npm install --only=production
 
 # Copy built application from build stage
 COPY --from=builder /app/dist ./dist/
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma/
 
 # Create a script to run migrations and start the server
-COPY <<EOF /app/start.sh
-#!/bin/sh
-npx prisma migrate deploy
-npm run db:seed
-npm start
-EOF
+RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnpm run db:seed\nnpm start' > /app/start.sh
 
 RUN chmod +x /app/start.sh
 
